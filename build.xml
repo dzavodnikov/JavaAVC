@@ -1,0 +1,177 @@
+<?xml version="1.0"?>
+<!--
+    If in Eclipse IDE you get an error:
+
+        Unable to find a javac; Perhaps JAVA_HOME does not point to the JDK...
+
+    you should go to:
+
+        'Window' -> 'Preferences' -> 'Java' -> 'Installed JRE'
+
+    and define path to you JDK.
+-->
+<!--
+    If in Eclipse IDE you get an error:
+
+        Specified VM install not found...
+
+    you should go to:
+
+        '<WORKSPACE>/.metadata/.plugins/org.eclipse.debug.core/.launches/'
+
+    and remove file:
+
+        '<PROJECT_NAME> build.xml.launch'
+
+    or just remove all '*.launch' files.
+-->
+<!--
+    If in Eclipse IDE you get an error:
+
+        Error: Could not find or load main class...
+
+    Just execute:
+
+        'Project' -> 'Clean...'
+
+    and select your project.
+-->
+<project name="JavaAVC (Java Audio/Video Codec)" default="build" basedir=".">
+    <property name="program.name"       value="JavaAVC" />
+    <property name="program.ver.major"  value="1" />
+    <property name="program.ver.minor"  value="0" />
+    <property name="program.ver.patch"  value="0" />
+    <property name="program.ver"        value="${program.ver.major}.${program.ver.minor}.${program.ver.patch}" />
+    <property name="program"            value="${program.name}-${program.ver}" />
+
+    <property name="bin.dir"            value="${basedir}/bin" />
+    <property name="src.dir"            value="${basedir}/src" />
+    <property name="main.src.dir"       value="${src.dir}/main" />
+    <property name="test.src.dir"       value="${src.dir}/test" />
+    <property name="example.src.dir"    value="${src.dir}/example" />
+    <property name="javadoc.dir"        value="${basedir}/javadoc" />
+    <property name="lib.dir"            value="${basedir}/lib" />
+    <property name="required.lib.dir"   value="${lib.dir}/required" />
+    <property name="test.lib.dir"       value="${lib.dir}/test" />
+    <property name="resources.dir"      value="${basedir}/resources" />
+    <property name="build.dir"          value="${basedir}/build" />
+    <property name="native.dir"         value="${basedir}/native" />
+
+    <property name="test.class"         value="org.javaavc.AllTests" />
+
+    <path id="classpath">
+        <fileset dir="${required.lib.dir}" includes="**/*.jar" />
+        <fileset dir="${test.lib.dir}"     includes="**/*.jar" />
+        <pathelement path="${bin.dir}" />
+    </path>
+
+    <target name="clean">
+        <delete dir="${bin.dir}" />
+        <delete dir="${javadoc.dir}" />
+        <delete dir="${build.dir}" />
+        <delete>
+            <fileset dir="${basedir}" includes="*.zip" />
+        </delete>
+    </target>
+
+    <target name="mkdir" depends="clean">
+        <mkdir dir="${bin.dir}" />
+        <mkdir dir="${javadoc.dir}" />
+        <mkdir dir="${build.dir}" />
+    </target>
+
+    <!--
+       Uses properties:
+        * "bin.dir" (can be overrided throw "bin"  attribute)
+        * "src.dir" (can be overrided throw "src"  attribute)
+    -->
+    <macrodef name="compile">
+        <attribute name="bin" default="${bin.dir}" />
+        <attribute name="src" default="${src.dir}" />
+        <sequential>
+            <javac
+                srcdir="@{src}"
+                destdir="@{bin}"
+                source="1.7"
+                target="1.7"
+                optimize="true"
+                includeAntRuntime="false"
+                encoding="UTF-8">
+
+                <classpath>
+                    <path refid="classpath" />
+                </classpath>
+            </javac>
+        </sequential>
+    </macrodef>
+
+    <target name="compile" depends="mkdir">
+        <compile src="${main.src.dir}" />
+        <compile src="${test.src.dir}" />
+        <compile src="${example.src.dir}" />
+    </target>
+
+    <target name="test" depends="compile">
+        <junit printsummary="yes" haltonfailure="yes" showoutput="yes">
+            <classpath>
+                <path refid="classpath" />
+            </classpath>
+            <test fork="yes" name="${test.class}" />
+        </junit>
+    </target>
+
+    <target name="javadoc" depends="mkdir">
+        <javadoc 
+            sourcepath="${main.src.dir}" 
+            destdir="${javadoc.dir}"
+            encoding="UTF-8" 
+            docencoding="UTF-8" 
+            charset="UTF-8"
+            access="public" 
+            notree="true">
+
+            <classpath>
+                <path refid="classpath" />
+            </classpath>
+        </javadoc>
+    </target>
+
+    <!--
+       Uses properties:
+        * "bin.dir" (can be overrided throw "bin"  attribute)
+        * "src.dir" (can be overrided throw "src"  attribute)
+        * "program" (can be overrided throw "name" attribute)
+        * "basedir" (can be overrided throw "res"  attribute)
+    -->
+    <macrodef name="jars">
+        <attribute name="bin"  default="${bin.dir}" />
+        <attribute name="src"  default="${src.dir}" />
+        <attribute name="res"  default="${basedir}" />
+        <attribute name="name" default="${program}" />
+        <sequential>
+            <!-- Classes. -->
+            <delete  dir="@{bin}" />
+            <mkdir   dir="@{bin}" />
+            <compile src="@{src}" />
+            <jar basedir="@{bin}" destfile="@{res}/@{name}-bin.jar" />
+            <!-- Sources. -->
+            <jar basedir="@{src}" destfile="@{res}/@{name}-src.jar" />
+        </sequential>
+    </macrodef>
+
+    <target name="jars" depends="mkdir">
+        <jars src="${main.src.dir}" res="${build.dir}" />
+    </target>
+    
+    <target name="copy-native">
+        <copy todir="${build.dir}">
+            <fileset dir="${native.dir}" casesensitive="yes">
+                <include name="**/*.jar"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="build" depends="test, javadoc, jars, copy-native">
+        <jars src="${main.src.dir}" res="${build.dir}" />
+    </target>
+</project>

@@ -1,0 +1,191 @@
+<?xml version="1.0"?>
+<project name="JavaAVC (Java Audio/Video Codec) Native JARs Generation" default="build" basedir=".">
+    <property name="library.name"               value="javaavc" />
+
+    <property name="ffmpeg.name"                value="ffmpeg" />
+    <!-- See: https://ffmpeg.org/releases/ -->
+    <property name="ffmpeg.ver"                 value="2.2.8" />
+    <property name="ffmpeg.dir"                 value="${ffmpeg.name}-${ffmpeg.ver}" />
+    <property name="ffmpeg.distr"               value="${ffmpeg.dir}.tar.gz" />
+    <property name="ffmpeg.link"                value="http://ffmpeg.org/releases/${ffmpeg.distr}" />
+
+    <property name="configure.cmd"              value="./configure" />
+    <property name="make.cmd"                   value="make" />
+    
+    <property name="arch.x86"                   value="x86" />
+    <property name="arch.x86_64"                value="x86_64" />
+    <property name="os.linux"                   value="linux" />
+    <property name="os.windows"                 value="windows" />
+
+    <property name="build.help.file"            value="Build Help.txt" />
+    
+    <target name="clean.ffmpeg.dir">
+        <delete dir="${basedir}/${ffmpeg.dir}" />
+    </target>
+
+    <target name="clean" depends="clean.ffmpeg.dir">
+        <delete file="${basedir}/${build.help.file}" />
+        <delete>
+            <fileset dir="${basedir}" includes="*.log" />
+        </delete>
+        <delete>
+            <fileset dir="${basedir}" includes="*.jar" />
+        </delete>
+    </target>
+    
+    <target name="check.ffmpeg.distr">
+        <available file="${ffmpeg.distr}" property="ffmpeg.distr.present"/>
+    </target>
+
+    <target name="download" depends="check.ffmpeg.distr" unless="ffmpeg.distr.present" 
+        description="Download FFmpeg distr from official site.">
+        <exec executable="wget">
+            <arg value="${ffmpeg.link}" />
+        </exec>
+    </target>
+    
+    <target name="check.ffmpeg.dir">
+        <available file="${ffmpeg.dir}" property="ffmpeg.dir.present"/>
+    </target>
+
+    <target name="unpack" depends="download" unless="ffmpeg.dir.present" 
+        description="Unpack FFmpeg to directory.">
+        <exec executable="tar">
+            <arg value="-xf" />
+            <arg value="${ffmpeg.distr}" />
+        </exec>
+    </target>
+    
+    <target name="check.build.help">
+        <available file="${basedir}/${build.help.file}" property="build.help.file.present"/>
+    </target>
+
+    <target name="help" unless="build.help.file.present" 
+        description="Copy build options to file.">
+        <!-- Unpack. -->
+        <antcall target="unpack" />
+        
+        <exec executable="${configure.cmd}" 
+            dir="${basedir}/${ffmpeg.dir}" 
+            output="${basedir}/${build.help.file}">
+            <arg value="--help" />
+        </exec>
+        
+        <!-- Clean. -->
+        <antcall target="clean.ffmpeg.dir" />
+    </target>
+
+    <macrodef name="compile">
+        <attribute name="os" />
+        <attribute name="arch" />
+        
+        <element name="addition.configure" optional="yes" />
+        
+        <sequential>
+            <local name="log.file" />
+            <property name="log.file"  value="${basedir}/@{os}_@{arch}.log" />
+
+            <local name="build.name" />
+            <property name="build.name" value="${library.name}-${ffmpeg.ver}-@{os}-@{arch}" />
+
+            <local name="build.dir" />
+            <property name="build.dir" value="${basedir}/${build.name}" />
+
+            <local name="jar.file" />
+            <property name="jar.file"  value="${build.dir}-native.jar" />
+            
+            <!-- Unpack. -->
+            <antcall target="unpack" />
+            
+            <!-- $ ./configure ... -->
+            <exec executable="${configure.cmd}" dir="${basedir}/${ffmpeg.dir}" 
+                output="${log.file}" error="${log.file}" append="true">
+                <!-- Standard options. -->
+                <arg value="--fatal-warnings" />
+                <arg value="--prefix=build" />
+                <arg value="--bindir=${build.dir}" />
+                <arg value="--shlibdir=${build.dir}" />
+                
+                <!-- Licensing options. -->
+                <arg value="--enable-version3" />
+
+                <!-- Configuration options. -->
+                <arg value="--enable-shared" />
+                
+                <!-- Documentation options. -->
+                <arg value="--disable-doc" />
+
+                <!-- External library support. -->
+                <arg value="--disable-bzlib" />
+                <arg value="--disable-iconv" />
+                <!--<arg value="- -disable-lzma" />--><!-- Only for new versions. -->
+                <!--<arg value="- -disable-xlib" />--><!-- Only for new versions. -->
+                <arg value="--disable-zlib" />
+                
+                <!-- Toolchain options. -->
+                <arg value="--arch=@{arch}" />
+                <arg value="--pkg-config=pkg-config" /><!-- To correct Windows build. -->
+                <arg value="--enable-pic" />
+                
+                <!-- Advanced options (experts only). -->
+                <!--<arg value="- -enable-memalign-hack" />--><!-- ??? -->
+                
+                <!-- Other arguments. -->
+                <addition.configure />
+            </exec>
+            
+            <!-- $ make -->
+            <exec executable="${make.cmd}" dir="${basedir}/${ffmpeg.dir}" 
+                output="${log.file}" error="${log.file}" append="true" />
+            
+            <!-- $ make install -->
+            <exec executable="${make.cmd}" dir="${basedir}/${ffmpeg.dir}"
+                output="${log.file}" error="${log.file}" append="true">
+                <arg value="install" />
+            </exec>
+            
+            <!-- Copy files. -->
+            <copy file="${basedir}/${ffmpeg.dir}/COPYING.LGPLv2.1" todir="${build.dir}" />
+            <copy file="${basedir}/${ffmpeg.dir}/VERSION"          todir="${build.dir}" />
+            
+            <!-- Make JAR. -->
+            <jar destfile="${jar.file}" basedir="${build.dir}/.." includes="${build.name}/**" />
+            
+            <!-- Clean. -->
+            <delete dir="${build.dir}" />
+            <antcall target="clean.ffmpeg.dir" />
+        </sequential>
+    </macrodef>
+    
+    <target name="linux_x86" depends="unpack">
+        <compile os="${os.linux}" arch="${arch.x86}" />
+    </target>
+    
+    <target name="linux_x86_64" depends="unpack">
+        <compile os="${os.linux}" arch="${arch.x86_64}" />
+    </target>
+    
+    <target name="windows_x86" depends="unpack">
+        <compile os="${os.windows}" arch="${arch.x86}">
+            <addition.configure>
+                <arg value="--enable-cross-compile" />
+                <arg value="--target-os=mingw32" />
+                <arg value="--cross-prefix=i686-w64-mingw32-" />
+            </addition.configure>
+        </compile>
+    </target>
+    
+    <target name="windows_x86_64" depends="unpack">
+        <compile os="${os.windows}" arch="${arch.x86_64}"><!-- For x86/64 hosts. -->
+            <addition.configure>
+                <arg value="--enable-cross-compile" />
+                <arg value="--target-os=mingw32" />
+                <arg value="--cross-prefix=x86_64-w64-mingw32-" /><!-- For x86/64 hosts. -->
+            </addition.configure>
+        </compile>
+    </target>
+
+    <target name="build" depends="help, linux_x86, linux_x86_64, windows_x86, windows_x86_64" 
+        description="Create all required JAR-files with native code." />
+</project>
+

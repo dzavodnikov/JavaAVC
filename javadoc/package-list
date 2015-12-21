@@ -1,0 +1,9 @@
+org.javaavc
+org.javaavc.ffmpeg.avcodec
+org.javaavc.ffmpeg.avdevice
+org.javaavc.ffmpeg.avfilter
+org.javaavc.ffmpeg.avformat
+org.javaavc.ffmpeg.avutil
+org.javaavc.ffmpeg.swresample
+org.javaavc.ffmpeg.swscale
+org.javaavc.platform

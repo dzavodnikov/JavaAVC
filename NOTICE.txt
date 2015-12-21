@@ -1,0 +1,20 @@
+JavaAVC (Java Audio/Video Codecs) Library (http://javaavc.org/).
+Copyright 2013 JavaAVC Team.
+Distributed under Apache License 2.0.
+================================================================================
+JUnit (http://junit.org/).
+Copyright 2000-2013 JUnit Team.
+Distributed under EPL v1.0.
+================================================================================
+Java Hamcrest (http://hamcrest.org/JavaHamcrest/).
+Copyright 2012 hamcrest.org.
+Distributed under BSD License.
+================================================================================
+JNA (Java Native Access) Library (https://github.com/twall/jna/).
+Copyright 2007-2013 Todd Fast, Timothy Wall, Liang Chen.
+Distributed under GNU LGPL 2.1.
+================================================================================
+FFmpeg (http://www.ffmpeg.org/).
+Copyright 2013 FFmpeg Team.
+Compiled under LGPL v3.
+================================================================================
