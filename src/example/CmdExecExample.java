@@ -1,3 +1,4 @@
+
 /*
  * Copyright (c) 2013-2015 JavaAVC Team
  *
@@ -21,7 +22,7 @@ import java.io.IOException;
 import org.javaavc.JavaAVC;
 
 /**
- * @author Dmitriy Zavodnikov (d.zavodnikov@gmail.com)
+ * @author Dmitry Zavodnikov (d.zavodnikov@gmail.com)
  */
 public class CmdExecExample {
 

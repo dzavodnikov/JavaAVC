@@ -21,7 +21,7 @@ package org.javaavc.ffmpeg.avformat;
 import com.sun.jna.Library;
 
 /**
- * @author Dmitriy Zavodnikov (d.zavodnikov@gmail.com)
+ * @author Dmitry Zavodnikov (d.zavodnikov@gmail.com)
  */
 public interface Libavformat extends Library {
 

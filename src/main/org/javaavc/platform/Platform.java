@@ -41,7 +41,7 @@ import com.sun.jna.Native;
 /**
  * Base class for platform-specific code. Sub-classes should implement code specific for some OS.
  *
- * @author Dmitriy Zavodnikov (d.zavodnikov@gmail.com)
+ * @author Dmitry Zavodnikov (d.zavodnikov@gmail.com)
  */
 public abstract class Platform {
 

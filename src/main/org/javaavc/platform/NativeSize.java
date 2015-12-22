@@ -24,12 +24,12 @@ import com.sun.jna.Native;
 /**
  * This class implement <code>size_t</code> C-type, that can be 32-bit or 64-bit integer.
  *
- * @author Dmitriy Zavodnikov (d.zavodnikov@gmail.com)
+ * @author Dmitry Zavodnikov (d.zavodnikov@gmail.com)
  */
 /*
  * Based on:
- *  * https://github.com/dzavodnikov/JavaAVC/blob/master/src/com/ochafik/lang/jnaerator/runtime/NativeSize.java
- *  * https://github.com/ochafik/nativelibs4java/blob/master/libraries/jnaerator/jnaerator-runtime/src/main/java/com/ochafik/lang/jnaerator/runtime/NativeSize.java
+ *      https://github.com/dzavodnikov/JavaAVC/blob/master/src/com/ochafik/lang/jnaerator/runtime/NativeSize.java
+ *      https://github.com/ochafik/nativelibs4java/blob/master/libraries/jnaerator/jnaerator-runtime/src/main/java/com/ochafik/lang/jnaerator/runtime/NativeSize.java
  */
 public class NativeSize extends IntegerType {
 

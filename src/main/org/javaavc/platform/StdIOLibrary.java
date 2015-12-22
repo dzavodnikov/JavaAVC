@@ -32,7 +32,7 @@ import com.sun.jna.PointerType;
  * </ol>
  * </p>
  *
- * @author Dmitriy Zavodnikov (d.zavodnikov@gmail.com)
+ * @author Dmitry Zavodnikov (d.zavodnikov@gmail.com)
  */
 public interface StdIOLibrary extends Library {
 

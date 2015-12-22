@@ -24,7 +24,7 @@ import java.io.IOException;
 /**
  * Contains code specific for Windows.
  *
- * @author Dmitriy Zavodnikov (d.zavodnikov@gmail.com)
+ * @author Dmitry Zavodnikov (d.zavodnikov@gmail.com)
  */
 public final class Windows extends Platform {
 

@@ -31,7 +31,7 @@ import org.junit.Test;
 /**
  * Test class for {@link JavaAVC}.
  *
- * @author Dmitriy Zavodnikov (d.zavodnikov@gmail.com)
+ * @author Dmitry Zavodnikov (d.zavodnikov@gmail.com)
  */
 public class JavaAvcTest {
 
