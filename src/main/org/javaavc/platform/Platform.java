@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2015 JavaAVC Team
+ * Copyright 2012-2018 JavaAVC Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,19 +45,19 @@ import com.sun.jna.Native;
  */
 public abstract class Platform {
 
-    public static final String SEPARATOR        = "-";
+    public static final String SEPARATOR = "-";
 
-    public static final String OS_NAME          = "os.name";
+    public static final String OS_NAME = "os.name";
 
-    public static final String JAVA_TEMP_DIR    = "java.io.tmpdir";
+    public static final String JAVA_TEMP_DIR = "java.io.tmpdir";
 
     public static final String JNA_LIBRARY_PATH = "jna.library.path";
 
-    private final String       id;
+    private final String id;
 
-    private final Arch         arch;
+    private final Arch arch;
 
-    public final StdIOLibrary  STD_IO_LIB;
+    public final StdIOLibrary STD_IO_LIB;
 
     private static void checkString(final String name, final String value) {
         if (value == null || value.isEmpty()) {
@@ -170,11 +170,9 @@ public abstract class Platform {
     /**
      * Unpack native library from JAR-file to temporary directory and return {@link File} to it.
      *
-     * <p>
-     * Will be found resource in format <code>LibName_OsName_Arch</code> (for example, <code>mylib_linux_64</code>),
+     * <p> Will be found resource in format <code>LibName_OsName_Arch</code> (for example, <code>mylib_linux_64</code>),
      * copied into temporary directory and returned {@link File} of this copy (for example,
-     * <code>/tmp/mylib_linux_64</code>).
-     * </p>
+     * <code>/tmp/mylib_linux_64</code>). </p>
      */
     public File unpackNativeLibrary(final String libName, final String libVer) throws IOException {
         /*
@@ -349,11 +347,11 @@ public abstract class Platform {
 
         public static final String NAME_SYSTEM_PROPPERTY = "os.arch";
 
-        private final String       id;
+        private final String id;
 
-        private final String       namePattern;
+        private final String namePattern;
 
-        private String             name;
+        private String name;
 
         private Arch(final String id, final String namePattern) {
             this.id = id;

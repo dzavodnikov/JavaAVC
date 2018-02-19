@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2015 JavaAVC Team
+ * Copyright 2012-2018 JavaAVC Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import java.io.IOException;
  */
 public final class Linux extends Platform {
 
-    public static final String ID           = "linux";
+    public static final String ID = "linux";
 
     public static final String NAME_PATTERN = "Linux";
 
@@ -39,13 +39,9 @@ public final class Linux extends Platform {
     /**
      * Run executable file in separate process. Supported Linux and Windows.
      *
-     * <p>
-     * For Linux -- see shared library search paths:
-     * <ol>
-     * <li><a href="http://tldp.org/HOWTO/Program-Library-HOWTO/shared-libraries.html">Shared Libraries -- tldp.org</a>.
-     * </li>
-     * </ol>
-     * </p>
+     * <p> For Linux -- see shared library search paths: <ol> <li><a
+     * href="http://tldp.org/HOWTO/Program-Library-HOWTO/shared-libraries.html">Shared Libraries -- tldp.org</a>. </li>
+     * </ol> </p>
      */
     @Override
     public Process getNativeProcess(final File binFile, final String command) throws IOException {
